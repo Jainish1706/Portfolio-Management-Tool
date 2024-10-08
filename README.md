@@ -27,7 +27,7 @@ pip install pandas openpyxl pyxirr yfinance
 1. **Prepare the Excel Files:**<br>
    -`Buy-sell.xlsx`: Ensure your buy/sell transactions are recorded in the "Buy-Sell Entry" sheet with ISIN, symbol, quantity, dates, and net amount.<br>
    -`Holdings and valuation.xlsx`: Prepare the sheet "Holdings, Valuations and P&L" for input/output of holdings data, valuation dates, and P&L sections.<br>
-2. **Run the Python Script:** Execute `main.py` script to process the data(Make sure to change maximum rows for each function so that all transactions can be recoreded). This will:<br>
+2. **Run the Python Script:** Execute `main.py` script to process the data(**Make sure to change maximum rows for each function so that all transactions can be recoreded**). This will:<br>
          -Segregate the buy and sell orders.<br>
          -Process P&L and valuation data.<br>
          -Update the Excel files with calculated results (CAGR, XIRR, capital gains, etc.).<br>
