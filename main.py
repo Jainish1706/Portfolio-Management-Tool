@@ -349,11 +349,13 @@ def populate_sheet(wb, sheet, q_list, df, col_mapping, file_path):
 
 if __name__ == '__main__':
 
+
     #reading for buy and sell entry
     wb1, sheet2 = load_worksheet('Buy-sell.xlsx', 'Buy-Sell Entry')
     column_mapping_read1 = {2: 'ISIN', 3: 'symbols', 4: 'BS', 5: 'Quant', 9: 'Date', 13: 'Net_Amt', 14: 'Unit_Price'}
     skip_columns = [6, 7, 8, 10, 11, 12]
-    q = extract_columns_to_dataframe(sheet2, column_mapping_read1, 3, 23, skip_columns)
+    n1 = int(input("Enter last row for your dataset till the point you entered your stocks: \n"))
+    q = extract_columns_to_dataframe(sheet2, column_mapping_read1, 3, n1, skip_columns)
 
     q_buy, q_sell = buy_and_sell_q(q)
 
@@ -394,7 +396,8 @@ if __name__ == '__main__':
 
     #Reading and writing for Valuation dates
     column_mapping_read2 = {16: 'Valuation_DD', 17: 'Valuation_MM', 18: 'Valuation_YYYY', 19: 'Valuation_Date'}
-    q2 = extract_columns_to_dataframe(sheet2, column_mapping_read2, 3, 8, skip_columns)
+    n2 = int(input("Enter the last row for the valuation part of buy-sell sheet whose difference should be same as the row difference of your portfolio holdings part of holdings and valuation sheet: \n"))
+    q2 = extract_columns_to_dataframe(sheet2, column_mapping_read2, 3, n2, skip_columns)
     q2['Valuation_Date'] = q2.apply(lambda x: f"{int(x['Valuation_DD']):02d}-{int(x['Valuation_MM']):02d}-{int(x['Valuation_YYYY'])}", axis=1)
 
     clear_columns(sheet3, 23, 26)
@@ -404,11 +407,12 @@ if __name__ == '__main__':
     
     #Reading and writing for valuation prices on given Date
     column_mapping_read3 = {18: 'ticker_symbol'}
-    q = extract_columns_to_dataframe(sheet3, column_mapping_read3, 4, 9, skip_columns)
+    n3 = int(input("Enter the last row of your holding and valuation sheet's portfolio holding section: \n"))
+    q = extract_columns_to_dataframe(sheet3, column_mapping_read3, 4, n3, skip_columns)
     ticker_symbol = q.values.tolist()
     flattened_ticker_symbol = [item for sublist in ticker_symbol for item in sublist]
     column_mapping_read3 = {26: 'date_of_interest_dt'}
-    q = extract_columns_to_dataframe(sheet3, column_mapping_read3, 4, 9, skip_columns)
+    q = extract_columns_to_dataframe(sheet3, column_mapping_read3, 4, n3, skip_columns)
     date_of_interest_dt = q.values.tolist()
     flattened_date_of_interest_dt = [item for sublist in date_of_interest_dt for item in sublist]
 
@@ -420,10 +424,10 @@ if __name__ == '__main__':
 
     #Quantity and Amount Invested
     column_mapping_read4 = {19: 'Quant'}
-    Quantity = extract_columns_to_dataframe(sheet3, column_mapping_read4, 4, 9, skip_columns)
+    Quantity = extract_columns_to_dataframe(sheet3, column_mapping_read4, 4, n3, skip_columns)
 
     column_mapping_read5 = {22: 'NetAmt'}
-    Amt = extract_columns_to_dataframe(sheet3, column_mapping_read5, 4, 9, skip_columns)
+    Amt = extract_columns_to_dataframe(sheet3, column_mapping_read5, 4, n3, skip_columns)
 
     q_final = process_and_update_sheet(Amt, Quantity, q_closing_price)
     clear_columns(sheet3, 28, 30)
@@ -435,7 +439,7 @@ if __name__ == '__main__':
     #CAGR for portfolio calculation and writing
     column_mapping_read6 = {20: 'B_Date', 22: 'Amt_payed', 26: 'S_Date', 28: 'Amt_rec'}
     skip_columns = [21, 23, 24, 25, 27]
-    q = extract_columns_to_dataframe(sheet3, column_mapping_read6, 4, 9, skip_columns)
+    q = extract_columns_to_dataframe(sheet3, column_mapping_read6, 4, n3, skip_columns)
     cagr = port_cagr(q)
 
     clear_columns(sheet3, 31, 31)
@@ -454,7 +458,8 @@ if __name__ == '__main__':
     #calculate XIRR  for P and L
     column_mapping_read7 = {37: 'B_Date', 39: 'Amt_payed', 40: 'S_Date', 42: 'Amt_rec'}
     skip_columns = [38,41]
-    q = extract_columns_to_dataframe(sheet3, column_mapping_read7, 4, 15, skip_columns)
+    n4 = int(input("The last row value of your realized profit and loss part in holding sheet"))
+    q = extract_columns_to_dataframe(sheet3, column_mapping_read7, 4, n4, skip_columns)
     xirr_pl = calculate_xirr(q)
 
     #write XIRR P and L in excel
@@ -472,7 +477,7 @@ if __name__ == '__main__':
 
     #Extracting for p and l column
     column_mapping_read8 = {43: 'Profit/Loss'}
-    q = extract_columns_to_dataframe(sheet3, column_mapping_read8, 4, 15, skip_columns)
+    q = extract_columns_to_dataframe(sheet3, column_mapping_read8, 4, n4, skip_columns)
 
     result = pd.concat([Days, q], axis = 1)
     n = len(Days)
