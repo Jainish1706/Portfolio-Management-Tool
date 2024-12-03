@@ -395,8 +395,17 @@ if __name__ == '__main__':
 
 
     #Reading and writing for Valuation dates
+    column = 17
+    max_row = 0
+    for row in sheet3.iter_rows(min_col=column, max_col=column):
+        for cell in row:
+            if cell.value is not None:
+                max_row = cell.row
+
+
+
     column_mapping_read2 = {16: 'Valuation_DD', 17: 'Valuation_MM', 18: 'Valuation_YYYY', 19: 'Valuation_Date'}
-    n2 = int(input("Enter the last row for the valuation part of buy-sell sheet whose difference should be same as the row difference of your portfolio holdings part of holdings and valuation sheet: \n"))
+    n2 = max_row-1
     q2 = extract_columns_to_dataframe(sheet2, column_mapping_read2, 3, n2, skip_columns)
     q2['Valuation_Date'] = q2.apply(lambda x: f"{int(x['Valuation_DD']):02d}-{int(x['Valuation_MM']):02d}-{int(x['Valuation_YYYY'])}", axis=1)
 
@@ -407,7 +416,7 @@ if __name__ == '__main__':
     
     #Reading and writing for valuation prices on given Date
     column_mapping_read3 = {18: 'ticker_symbol'}
-    n3 = int(input("Enter the last row of your holding and valuation sheet's portfolio holding section: \n"))
+    n3 = max_row
     q = extract_columns_to_dataframe(sheet3, column_mapping_read3, 4, n3, skip_columns)
     ticker_symbol = q.values.tolist()
     flattened_ticker_symbol = [item for sublist in ticker_symbol for item in sublist]
@@ -456,9 +465,16 @@ if __name__ == '__main__':
     populate_sheet(wb2, sheet3,q_List,  df, col_mapping9, "Holdings and valuation.xlsx")
 
     #calculate XIRR  for P and L
+    column = 34
+    max_row = 0
+    for row in sheet3.iter_rows(min_col=column, max_col=column):
+        for cell in row:
+            if cell.value is not None:
+                max_row = cell.row
+
     column_mapping_read7 = {37: 'B_Date', 39: 'Amt_payed', 40: 'S_Date', 42: 'Amt_rec'}
     skip_columns = [38,41]
-    n4 = int(input("The last row value of your realized profit and loss part in holding sheet"))
+    n4 = max_row
     q = extract_columns_to_dataframe(sheet3, column_mapping_read7, 4, n4, skip_columns)
     xirr_pl = calculate_xirr(q)
 
